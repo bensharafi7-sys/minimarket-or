@@ -1,0 +1,101 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><title>ניהול – מינימרקט אור</title>
+<link rel="icon" href="img/icon-512.png">
+<style>
+@font-face{font-family:H;src:url(fonts/rubik.ttf)}
+*{box-sizing:border-box}body{margin:0;font-family:H,Heebo,Arial,sans-serif;background:#fff;color:#111;font-size:18px}
+header{background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+header img{width:44px;height:44px;border-radius:10px;background:#fff}header h1{font-size:20px;margin:0;flex:1}
+header button{background:none;border:2px solid #ff7a00;color:#ff7a00;border-radius:12px;padding:8px 12px;font:inherit;font-size:15px}
+main{padding:14px;max-width:680px;margin:auto}
+.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{flex:1;padding:14px;font:inherit;font-weight:800;border:3px solid #111;border-radius:14px;background:#fff}
+.tabs button.on{background:#ff7a00;border-color:#ff7a00;color:#fff}
+.card{display:flex;gap:12px;align-items:center;border:2px solid #eee;border-radius:16px;padding:10px;margin-bottom:10px;background:#fff}
+.card img{width:72px;height:72px;object-fit:contain;border-radius:10px;background:#f6f6f6;flex:none}
+.card .b{flex:1;min-width:0}.card .n{font-weight:800;font-size:17px;line-height:1.2;margin-bottom:6px}
+.row{display:flex;gap:8px;align-items:center}
+input,select{font:inherit;font-size:20px;padding:12px;border:2px solid #ccc;border-radius:12px;width:100%;min-height:52px;background:#fff;color:#111}
+input:focus,select:focus{outline:none;border-color:#ff7a00}
+.pr{position:relative;flex:1}.pr input{padding-left:34px;direction:ltr;text-align:right}.pr span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#777}
+.save{background:#ff7a00;color:#fff;border:0;border-radius:12px;font:inherit;font-weight:800;padding:0 18px;min-height:52px;flex:none}
+.save.ok{background:#111}.del{background:#fff;color:#c00;border:2px solid #c00;border-radius:12px;font:inherit;padding:0 14px;min-height:52px}
+.big{width:100%;background:#111;color:#fff;border:0;border-radius:14px;padding:16px;font:inherit;font-weight:800;font-size:19px;margin:6px 0 16px}
+form.f{border:3px solid #ff7a00;border-radius:16px;padding:14px;margin-bottom:16px;display:grid;gap:10px}form.f h3{margin:0}
+label{font-size:15px;font-weight:700;color:#444}.muted{color:#777;font-size:14px}
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:#111;color:#fff}
+#login img{width:150px}#login input{max-width:240px;text-align:center;font-size:34px;letter-spacing:12px;direction:ltr}
+#login button{max-width:240px}#login .err{color:#ff9a3c;min-height:24px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(140px);background:#111;color:#fff;padding:14px 22px;border-radius:14px;border:2px solid #ff7a00;font-weight:800;transition:.25s;z-index:9}
+#toast.on{transform:translateX(-50%)}#toast.bad{border-color:#c00}
+.hide{display:none!important}.thumbpick{display:flex;gap:10px;align-items:center}.thumbpick img{width:64px;height:64px;object-fit:contain;background:#f6f6f6;border-radius:10px}
+</style></head><body>
+<section id="login"><img src="img/logo.png" alt=""><h2 style="margin:0">ניהול מחירים ומבצעים</h2>
+<input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+<button class="big save" id="go" style="background:#ff7a00">כניסה</button><div class="err" id="err"></div></section>
+<div id="app" class="hide">
+<header><img src="img/icon-512.png" alt=""><h1>ניהול – מינימרקט אור</h1><button id="out">יציאה</button></header>
+<main>
+<div class="tabs"><button data-t="p" class="on">🏷️ מחירון</button><button data-t="d">🔥 מבצעים</button></div>
+<div id="tp">
+<button class="big" id="addP">➕ הוספת מוצר חדש</button>
+<form class="f hide" id="fp"><h3>מוצר חדש</h3>
+<label>שם המוצר<input name="name" required></label>
+<label>מחיר (אפשר להשאיר ריק)<input name="price" inputmode="decimal"></label>
+<label>קטגוריה<input name="cat" list="cats"></label><datalist id="cats"></datalist>
+<label>תמונה – צילום/קובץ<input type="file" accept="image/*" name="file"></label>
+<label>או קישור לתמונה (https://)<input name="img" dir="ltr"></label>
+<button class="save">שמור</button></form>
+<input id="q" placeholder="🔍 חיפוש מוצר" style="margin-bottom:12px"><div id="lp"></div></div>
+<div id="td" class="hide">
+<button class="big" id="addD">➕ מבצע חדש</button><div id="ld"></div>
+<p class="muted">מבצע שתאריך התוקף שלו עבר, או שכתוב בו "למחוק", לא יוצג באתר.</p></div>
+<p class="muted">מחיר ריק יוצג באתר כ"מחיר יעודכן בקרוב".</p>
+</main></div><div id="toast"></div>
+<script type="module">
+import {SB,SBK,rpc,esc} from './sheet.js';
+const $=s=>document.querySelector(s);let PIN=sessionStorage.getItem('mo_pin')||'',DATA=null;
+const toast=(t,bad)=>{const e=$('#toast');e.textContent=t;e.className='on'+(bad?' bad':'');clearTimeout(e._t);e._t=setTimeout(()=>e.className='',2200)};
+async function call(a,body={}){
+ if(a==='image'){const r=await fetch(SB+'/functions/v1/mm-upload',{method:'POST',headers:{'Content-Type':'application/json',apikey:SBK,Authorization:'Bearer '+SBK},body:JSON.stringify({...body,pin:PIN})});
+  const d=await r.json().catch(()=>({error:'אין חיבור'}));if(!r.ok||d.error)throw new Error(d.error||'שגיאה');return d}
+ const d=await rpc('mm_admin',{p_pin:PIN,p_action:a,p:body});if(d&&d.error)throw new Error(d.error);return d}
+const img=u=>u?esc(u):'img/icon-512.png';
+function render(){const q=$('#q').value.trim();
+ $('#cats').innerHTML=[...new Set(DATA.products.map(p=>p.cat).filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
+ $('#lp').innerHTML=DATA.products.filter(p=>!q||p.name.includes(q)).map(p=>`<div class="card" data-id="${p.id}"><img src="${img(p.img)}" alt="" onerror="this.src='img/icon-512.png'"><div class="b"><div class="n">${esc(p.name)}</div>
+ <div class="row"><div class="pr"><input class="price" inputmode="decimal" value="${esc(p.price)}" placeholder="מחיר"><span>₪</span></div><button class="save sp">שמור</button></div></div></div>`).join('');
+ $('#ld').innerHTML=DATA.deals.map(dealForm).join('')||'<p class="muted">אין מבצעים כרגע.</p>'}
+const dealForm=d=>`<form class="f deal" data-id="${d.id||''}"><h3>${d.id?'מבצע':'מבצע חדש'}</h3>
+<label>כותרת<input name="title" value="${esc(d.title||'')}" required></label>
+<div class="row"><label style="flex:1">מחיר<div class="pr"><input name="price" inputmode="decimal" value="${esc(d.price||'')}"><span>₪</span></div></label>
+<label style="flex:1">בתוקף עד<input name="until" type="date" value="${esc(d.until||'')}"></label></div>
+<div class="thumbpick"><img src="${img(d.img)}" alt=""><label style="flex:1">תמונה<input type="file" accept="image/*" name="file"></label></div>
+<label>או קישור לתמונה<input name="img" dir="ltr" value="${esc(d.img||'')}"></label>
+<div class="row"><button class="save" style="flex:1">שמור</button>${d.id?'<button type="button" class="del">מחק</button>':''}</div></form>`;
+async function upload(file){if(!file)return '';const bm=await createImageBitmap(file);const s=Math.min(1,700/Math.max(bm.width,bm.height));
+ const c=document.createElement('canvas');c.width=Math.round(bm.width*s);c.height=Math.round(bm.height*s);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
+ let u=c.toDataURL('image/webp',.82);if(!u.startsWith('data:image/webp'))u=c.toDataURL('image/jpeg',.82);
+ const [h,b64]=u.split(',');return (await call('image',{mime:h.slice(5,-7),b64})).url}
+async function login(){PIN=$('#pin').value.trim()||PIN;$('#err').textContent='';
+ try{DATA=await call('login');sessionStorage.setItem('mo_pin',PIN);$('#login').classList.add('hide');$('#app').classList.remove('hide');render()}
+ catch(e){$('#err').textContent=e.message;PIN='';sessionStorage.removeItem('mo_pin')}}
+$('#go').onclick=login;$('#pin').onkeydown=e=>{if(e.key=='Enter')login()};
+$('#out').onclick=()=>{sessionStorage.removeItem('mo_pin');location.reload()};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x==b));$('#tp').classList.toggle('hide',b.dataset.t!='p');$('#td').classList.toggle('hide',b.dataset.t!='d')});
+$('#q').oninput=render;$('#addP').onclick=()=>$('#fp').classList.toggle('hide');
+$('#addD').onclick=()=>{$('#ld').insertAdjacentHTML('afterbegin',dealForm({}));$('#ld .deal input').focus()};
+$('#lp').onclick=async e=>{const b=e.target.closest('.sp');if(!b)return;const c=b.closest('.card');b.disabled=true;
+ try{DATA=await call('product/price',{id:+c.dataset.id,price:c.querySelector('.price').value});b.classList.add('ok');b.textContent='✓ נשמר';toast('המחיר נשמר ✓');setTimeout(render,900)}
+ catch(er){toast(er.message,1);b.disabled=false}};
+$('#fp').onsubmit=async e=>{e.preventDefault();const f=e.target,b=f.querySelector('.save');b.disabled=true;
+ try{const u=await upload(f.file.files[0])||f.img.value.trim();DATA=await call('product/save',{name:f.elements.name.value,price:f.price.value,cat:f.cat.value,img:u});f.reset();f.classList.add('hide');render();toast('המוצר נוסף ✓')}
+ catch(er){toast(er.message,1)}b.disabled=false};
+$('#ld').onsubmit=async e=>{e.preventDefault();const f=e.target,b=f.querySelector('.save');b.disabled=true;
+ try{const u=await upload(f.file.files[0])||f.img.value.trim();DATA=await call('deal/save',{id:+f.dataset.id||0,title:f.elements.title.value,price:f.price.value,until:f.until.value,img:u});render();toast('המבצע נשמר ✓')}
+ catch(er){toast(er.message,1);b.disabled=false}};
+$('#ld').onclick=async e=>{const b=e.target.closest('.del');if(!b||!confirm('למחוק את המבצע?'))return;
+ try{DATA=await call('deal/delete',{id:+b.closest('form').dataset.id});render();toast('המבצע נמחק')}catch(er){toast(er.message,1)}};
+$('#ld').onchange=e=>{if(e.target.name=='file'&&e.target.files[0])e.target.closest('form').querySelector('.thumbpick img').src=URL.createObjectURL(e.target.files[0])};
+if(PIN)login();
+</script></body></html>
