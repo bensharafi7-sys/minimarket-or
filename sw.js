@@ -1,5 +1,5 @@
 importScripts('assets.js');
-const CACHE='mo-game-20261013185303';
+const CACHE='mo-game-20261013195022';
 const ASSETS=self.__ASSETS||[];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

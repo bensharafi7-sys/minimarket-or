@@ -31,7 +31,7 @@ label{font-size:15px;font-weight:700;color:#444}.muted{color:#777;font-size:14px
 .hide{display:none!important}.thumbpick{display:flex;gap:10px;align-items:center}.thumbpick img{width:64px;height:64px;object-fit:contain;background:#f6f6f6;border-radius:10px}
 </style></head><body>
 <section id="login"><img src="img/logo.png" alt=""><h2 style="margin:0">ניהול מחירים ומבצעים</h2>
-<input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+<input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="••••"><button type="button" class="eye" style="font:inherit;font-size:14px;border:2px solid #ddd;background:#fff;border-radius:999px;padding:4px 12px;margin:6px 0;cursor:pointer" aria-label="הצג קוד" onclick="const i=document.getElementById('pin');const s=i.type==='password';i.type=s?'text':'password';this.textContent=s?'🙈 הסתר':'👁 הצג קוד';this.setAttribute('aria-label',s?'הסתר קוד':'הצג קוד')">👁 הצג קוד</button>
 <button class="big save" id="go" style="background:#ff7a00">כניסה</button><div class="err" id="err"></div></section>
 <div id="app" class="hide">
 <header><img src="img/icon-512.png" alt=""><h1>ניהול – מינימרקט אור</h1><button id="out">יציאה</button></header>
@@ -77,7 +77,7 @@ async function upload(file){if(!file)return '';const bm=await createImageBitmap(
  const c=document.createElement('canvas');c.width=Math.round(bm.width*s);c.height=Math.round(bm.height*s);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
  let u=c.toDataURL('image/webp',.82);if(!u.startsWith('data:image/webp'))u=c.toDataURL('image/jpeg',.82);
  const [h,b64]=u.split(',');return (await call('image',{mime:h.slice(5,-7),b64})).url}
-async function login(){PIN=$('#pin').value.trim()||PIN;$('#err').textContent='';
+async function login(){PIN=String($('#pin').value).normalize('NFKC').replace(/\p{Nd}/gu,d=>{const c=d.codePointAt(0);for(const z of [0x30,0x660,0x6F0,0xFF10])if(c>=z&&c<z+10)return String(c-z);return d}).replace(/\D/g,'')||PIN;$('#err').textContent='';
  try{DATA=await call('login');sessionStorage.setItem('mo_pin',PIN);$('#login').classList.add('hide');$('#app').classList.remove('hide');render()}
  catch(e){$('#err').textContent=e.message;PIN='';sessionStorage.removeItem('mo_pin')}}
 $('#go').onclick=login;$('#pin').onkeydown=e=>{if(e.key=='Enter')login()};
