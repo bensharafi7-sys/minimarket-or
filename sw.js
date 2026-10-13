@@ -1,4 +1,4 @@
-const CACHE='mo-game-20261013125906';
+const CACHE='mo-game-20261013125957';
 const ASSETS=['./','index.html','cart.html','tower.html','common.css','common.js','kit.js','cart.js','tower.js','vendor/three.js','vendor/cannon.js','fonts/rubik.ttf','manifest.json',
 'img/logo.png','img/icon-512.png','img/thumb_cart.jpg','img/thumb_tower.jpg','img/bamba.png','img/bissli.png','img/tapuchips.png','img/cola.png','img/milk.png','img/tara.jpg','img/elite.jpg','img/para.png','img/krembo.jpg','img/pasta.png','img/cottage.png','img/milky.png','img/shoko.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
