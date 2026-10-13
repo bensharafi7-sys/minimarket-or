@@ -1,0 +1,40 @@
+@font-face{font-family:Rubik;src:url(fonts/rubik.ttf) format('truetype');font-weight:300 900;font-display:block}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#ff8a1c;font-family:Rubik,Heebo,Arial,sans-serif;color:#1a1a1a;touch-action:none}
+#app{position:fixed;inset:0;margin:auto;max-width:calc(100vh*9/16);overflow:hidden}
+canvas.gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.chunky{font-weight:900;color:#ff7a00;letter-spacing:-1px;line-height:.92;
+ -webkit-text-stroke:0;paint-order:stroke fill;
+ text-shadow:0 0 0 #000, 3px 3px 0 #111,-3px 3px 0 #111,3px -3px 0 #111,-3px -3px 0 #111,0 4px 0 #111,4px 0 0 #111,-4px 0 0 #111,0 -4px 0 #111,
+  6px 6px 0 #fff,-6px 6px 0 #fff,6px -6px 0 #fff,-6px -6px 0 #fff,0 8px 0 #fff,8px 0 0 #fff,-8px 0 0 #fff,0 -8px 0 #fff,0 12px 14px rgba(0,0,0,.35)}
+.chunky .w{color:#111;text-shadow:3px 3px 0 #fff,-3px 3px 0 #fff,3px -3px 0 #fff,-3px -3px 0 #fff,0 4px 0 #fff,4px 0 0 #fff,-4px 0 0 #fff,0 -4px 0 #fff,6px 6px 0 #111,-6px 6px 0 #111,6px -6px 0 #111,-6px -6px 0 #111,0 8px 0 #111,8px 0 0 #111,-8px 0 0 #111,0 12px 14px rgba(0,0,0,.35)}
+.hud{position:absolute;inset:0;pointer-events:none;z-index:5}
+.hud>*{pointer-events:auto}
+.rbtn{position:absolute;width:13vmin;height:13vmin;max-width:64px;max-height:64px;border-radius:50%;border:3px solid #fff;
+ background:radial-gradient(circle at 35% 30%,#ffb04a,#ff7a00 55%,#e05a00);box-shadow:0 4px 0 #a33f00,0 8px 16px rgba(0,0,0,.35);display:grid;place-items:center;cursor:pointer}
+.rbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #a33f00}
+.rbtn svg{width:55%;height:55%;fill:#fff}
+.rbtn.dark{background:radial-gradient(circle at 35% 30%,#3a3a3a,#111);box-shadow:0 4px 0 #000,0 0 0 3px #ff7a00,0 8px 16px rgba(0,0,0,.35)}
+.pill{position:absolute;right:3%;min-width:31%;padding:4px 14px 4px 10px;border-radius:14px;background:linear-gradient(#262626,#0d0d0d);
+ border:3px solid #ff7a00;box-shadow:0 0 0 2px #fff,0 6px 14px rgba(0,0,0,.35);display:flex;align-items:center;gap:8px;color:#ffb347;direction:rtl}
+.pill .lbl{font-size:13px;font-weight:700;color:#fff;display:block;line-height:1}
+.pill .val{font-size:25px;font-weight:900;line-height:1.05;color:#ffa21f;text-shadow:0 2px 0 #7a3200}
+.pill .ic{font-size:26px;margin-inline-start:auto}
+.bar{position:absolute;bottom:3.2%;right:4%;left:22%;height:30px;border-radius:16px;background:#111;border:3px solid #ff7a00;box-shadow:0 0 0 2px #fff,0 6px 12px rgba(0,0,0,.4);overflow:hidden;padding:3px}
+.bar i{display:block;height:100%;width:30%;border-radius:12px;background:repeating-linear-gradient(-45deg,#ffb347 0 10px,#ff8a00 10px 20px);box-shadow:inset 0 3px 0 rgba(255,255,255,.5);transition:width .2s}
+.bar b{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:800;text-shadow:0 1px 2px #000;direction:rtl}
+.overlay{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(255,140,30,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);direction:rtl}
+.overlay.on{display:flex}
+.card{width:86%;background:#fff;border-radius:28px;padding:22px 18px;text-align:center;border:4px solid #ff7a00;box-shadow:0 0 0 4px #111,0 20px 40px rgba(0,0,0,.35);position:relative}
+.card h2{margin:4px 0 6px;font-size:34px}
+.big{font-size:56px;font-weight:900;color:#ff7a00;text-shadow:0 3px 0 #111;line-height:1}
+.btn{display:block;width:100%;margin:10px 0 0;padding:14px;border:0;border-radius:18px;font:900 22px Rubik,sans-serif;color:#fff;cursor:pointer;
+ background:linear-gradient(#ffa53a,#ff7a00);box-shadow:0 5px 0 #a33f00,0 8px 14px rgba(0,0,0,.25);text-decoration:none}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #a33f00}
+.btn.wa{background:linear-gradient(#3ee07a,#1fae55);box-shadow:0 5px 0 #0d6a31}
+.btn.dk{background:linear-gradient(#3a3a3a,#111);box-shadow:0 5px 0 #000}
+.row{display:flex;gap:10px}.row .btn{flex:1;font-size:18px}
+.coupon{margin-top:12px;border:3px dashed #ff7a00;border-radius:16px;padding:10px;background:#fff6ec;font-weight:800;font-size:16px}
+.coupon small{display:block;font-weight:500;color:#555;margin-top:2px}
+.toast{position:absolute;top:30%;left:0;right:0;text-align:center;font:900 44px Rubik;z-index:8;pointer-events:none;opacity:0;transition:opacity .2s,transform .3s}
+.logo{position:absolute;top:1.5%;left:40%;transform:translateX(-50%);width:21%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}

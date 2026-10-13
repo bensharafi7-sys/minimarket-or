@@ -1,0 +1,30 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#ff7a00"><title>שוד העגלה · מגדל אור</title>
+<link rel="icon" href="img/icon-512.png"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="common.css">
+<style>
+#start .card{padding-top:16px}
+.title{position:absolute;top:16%;left:0;right:0;text-align:center;font-size:clamp(48px,17vmin,96px);z-index:25;pointer-events:none;transition:opacity .5s,transform .5s}
+.title.off{opacity:0;transform:translateY(-40px) scale(.7)}
+.hint{position:absolute;bottom:14%;left:0;right:0;text-align:center;z-index:6;font-weight:800;color:#fff;font-size:20px;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+</style></head><body><div id="app">
+<canvas class="gl" id="c"></canvas>
+<div class="title chunky" id="title">שוד<br><span class="w">העגלה</span></div>
+<div class="hud" id="hud" style="opacity:0;transition:opacity .4s">
+ <div class="rbtn" id="pause" style="top:2%;left:3%"></div>
+ <img class="logo" src="img/logo.png" alt="מינימרקט אור">
+ <div class="pill" style="top:2%"><div><span class="lbl">ניקוד:</span><span class="val" id="score">0</span></div><span class="ic">🏆</span></div>
+ <div class="pill" style="top:calc(2% + 66px)"><div><span class="lbl">מרחק:</span><span class="val" id="dist">0 מ'</span></div><span class="ic">🏁</span></div>
+ <div class="pill" style="top:calc(2% + 132px);min-width:24%;padding:2px 12px"><span class="val" id="coins" style="font-size:22px">0</span><span class="ic" style="font-size:20px">🪙</span></div>
+ <div class="bar"><i id="prog"></i><b id="progT"></b></div>
+ <div class="rbtn dark" id="gift" style="bottom:2.2%;left:3%"></div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="hint" id="hint">החליקו ימינה / שמאלה · קפיצה ⬆ · החלקה ⬇</div>
+<div class="overlay on" id="start" style="background:linear-gradient(transparent 40%,rgba(255,130,20,.45));backdrop-filter:none;-webkit-backdrop-filter:none"><div class="card" style="margin-top:95%">
+ <div style="font-weight:700;font-size:17px;line-height:1.5">דחפו את העגלה, התחמקו מהסבתא, מהשלט הרטוב ומהמדפים שקורסים,<br>ואספו מטבעות ומוצרים אמיתיים!</div>
+ <button class="btn" id="go">התחילו לרוץ</button><a class="btn dk" href="index.html" style="font-size:18px">חזרה למשחקים</a></div></div>
+<div class="overlay" id="paused"><div class="card"><h2 class="chunky">הפסקה</h2><button class="btn" id="resume">המשך</button><a class="btn dk" href="index.html">יציאה</a></div></div>
+<div class="overlay" id="results"></div>
+</div>
+<script type="module" src="cart.js"></script></body></html>
