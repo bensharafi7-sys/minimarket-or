@@ -1,0 +1,27 @@
+#app{background:#fff7ef;direction:rtl;overflow-y:auto;touch-action:pan-y}body{touch-action:pan-y}
+.top{position:sticky;top:0;z-index:5;background:linear-gradient(#ff8a1c,#ff7a00);padding:14px 16px 18px;border-bottom:4px solid #111;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.top .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.back{background:#111;color:#fff;text-decoration:none;font-weight:900;border-radius:999px;padding:8px 14px;border:3px solid #fff;font-size:15px}
+.top img{width:54px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.3))}
+.top h1{margin:8px 0 0;font-size:44px;text-align:center}
+.search{margin-top:12px;width:100%;font:700 18px Rubik;padding:12px 16px;border-radius:16px;border:3px solid #111;outline:0;direction:rtl;box-shadow:0 4px 0 #111}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 0;scrollbar-width:none}
+.chip{flex:none;font:800 15px Rubik;padding:7px 14px;border-radius:999px;border:2px solid #111;background:#fff;color:#111;cursor:pointer}
+.chip.on{background:#111;color:#ffb347}
+.list{padding:14px 14px 30px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.item{background:#fff;border:3px solid #111;border-radius:20px;box-shadow:0 5px 0 #111;padding:10px;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:220px}
+.item .ph{height:120px;width:100%;display:grid;place-items:center}
+.item .ph img{max-height:118px;max-width:100%;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,.18))}
+.item h3{margin:8px 0 4px;font-size:16px;line-height:1.2}
+.cat{font-size:12px;font-weight:700;color:#888}
+.pr{margin-top:auto;font-weight:900;font-size:24px;color:#ff7a00;text-shadow:0 2px 0 #111}
+.pr.na{font-size:14px;color:#fff;background:#111;border-radius:999px;padding:4px 10px;text-shadow:none}
+.deal{grid-column:1/-1;flex-direction:row;gap:12px;text-align:right;min-height:0;background:linear-gradient(135deg,#fff,#fff3e6);position:relative;overflow:hidden}
+.deal .ph{width:38%;height:130px}
+.deal .tx{flex:1;display:flex;flex-direction:column;gap:6px}
+.deal h3{font-size:21px;margin:0}
+.deal .until{font-weight:700;font-size:13px;color:#555}
+.deal .rib{position:absolute;top:10px;left:-34px;transform:rotate(-35deg);background:#e8262b;color:#fff;font-weight:900;font-size:13px;padding:3px 40px;border:2px solid #fff}
+.empty{grid-column:1/-1;text-align:center;font-weight:800;font-size:18px;padding:30px 10px;background:#fff;border:3px dashed #ff7a00;border-radius:20px}
+.note{grid-column:1/-1;text-align:center;font-size:12px;color:#777;font-weight:600}
+.fbbtn{display:flex;align-items:center;justify-content:center;gap:10px;background:#1877f2;color:#fff;text-decoration:none;font:900 19px Rubik;border-radius:18px;padding:13px;border:3px solid #111;box-shadow:0 5px 0 #111;margin:6px 14px 24px}

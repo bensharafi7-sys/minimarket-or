@@ -12,7 +12,7 @@ body{touch-action:pan-y}
 .wrap{position:relative;padding:18px 18px 28px;min-height:100%;display:flex;flex-direction:column;align-items:center}
 .top{width:100%;display:flex;justify-content:space-between;align-items:center}
 .wallet{background:linear-gradient(#262626,#0d0d0d);border:3px solid #fff;border-radius:999px;color:#ffb347;font-weight:900;font-size:20px;padding:4px 14px;box-shadow:0 4px 10px rgba(0,0,0,.3)}
-.hlogo{width:44%;max-width:200px;margin-top:4px;filter:drop-shadow(0 10px 16px rgba(120,40,0,.45));animation:bob 3s ease-in-out infinite}
+.hlogo{width:34%;max-width:170px;margin-top:4px;filter:drop-shadow(0 10px 16px rgba(120,40,0,.45));animation:bob 3s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-6px) rotate(-2deg)}}
 h1{margin:6px 0 0;font-size:clamp(64px,21vw,104px);text-align:center}
 .sub{margin-top:14px;background:#111;color:#fff;font-weight:800;font-size:19px;padding:6px 18px;border-radius:999px;border:3px solid #fff;box-shadow:0 5px 12px rgba(0,0,0,.3)}
@@ -31,11 +31,18 @@ h1{margin:6px 0 0;font-size:clamp(64px,21vw,104px);text-align:center}
 .foot{margin-top:22px;text-align:center;color:#fff;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,.35)}
 .foot a{display:inline-block;margin-top:8px;background:#fff;color:#111;text-decoration:none;font-weight:900;padding:8px 18px;border-radius:999px;border:3px solid #111;text-shadow:none}
 .cp{margin-top:14px;width:100%;background:#fff6ec;border:3px dashed #111;border-radius:18px;padding:10px;text-align:center;font-weight:800}
+.nav{width:100%;display:flex;gap:12px;margin-top:18px}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:#fff;color:#111;text-decoration:none;font:900 20px Rubik;border:4px solid #111;border-radius:22px;padding:12px 6px;box-shadow:0 6px 0 #111}
+.nb span{font-size:30px}.nb.dk{background:#111;color:#ffb347;border-color:#fff;box-shadow:0 6px 0 #a33f00}
+.nb:active,.fbb:active{transform:translateY(4px);box-shadow:0 2px 0 #111}
+.fbb{width:100%;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:10px;background:#1877f2;color:#fff;text-decoration:none;font:900 20px Rubik;border-radius:20px;padding:14px;border:4px solid #fff;box-shadow:0 6px 0 #0b4fb0,0 10px 20px rgba(0,0,0,.25)}
 </style></head><body><div id="app"><div class="rays"></div><div class="wrap">
 <div class="top"><div class="wallet" id="wallet">🪙 0</div><div class="rbtn dark" id="mute" style="position:static;width:48px;height:48px;font-size:22px">🔊</div></div>
 <img class="hlogo" src="img/logo.png" alt="מינימרקט אור">
 <h1 class="chunky">מגדל <span class="w">אור</span></h1>
 <div class="sub">מבית <b>מינימרקט אור</b></div>
+<div class="nav"><a class="nb" href="deals.html"><span>🔥</span>מבצעי השבוע</a><a class="nb dk" href="prices.html"><span>🏷️</span>מחירון</a></div>
+<a class="fbb" id="fbb" target="_blank" rel="noopener"></a>
 <div class="games">
  <a class="g" href="cart.html"><div class="th" style="background-image:url(img/thumb_cart.jpg)"></div><div class="badge">חדש!</div>
   <div class="tx"><h3>שוד העגלה</h3><p>רוצו עם העגלה בין המדפים, התחמקו מהסבתא ואספו מוצרים!</p><div class="meta"><span class="bst" id="b_cart">🏆 0</span><span class="play">שחקו ◀</span></div></div></a>
@@ -46,7 +53,8 @@ h1{margin:6px 0 0;font-size:clamp(64px,21vw,104px);text-align:center}
 <div class="foot">מינימרקט אור · מחכים לכם בחנות<br><a href="tel:03-9443449">📞 03-9443449</a></div>
 </div></div>
 <script type="module">
-import {store,sfx,audioUnlock} from './common.js';
+import {store,sfx,audioUnlock} from './common.js';import {FB,FB_SVG} from './sheet.js';
+document.getElementById('fbb').href=FB;document.getElementById('fbb').innerHTML=FB_SVG+'הדף שלנו בפייסבוק';
 const $=id=>document.getElementById(id);
 $('wallet').textContent='🪙 '+store.coins();$('b_cart').textContent='🏆 '+store.best('cart');$('b_tower').textContent='🏆 '+store.best('tower')+' ס"מ';
 const m=$('mute');const upd=()=>m.textContent=store.muted?'🔇':'🔊';upd();m.onclick=()=>{store.muted=!store.muted;upd();audioUnlock();sfx.click()};

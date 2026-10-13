@@ -60,6 +60,7 @@ export function showResults({game,title,score,unit,coins,extra,onRetry}){
   <div style="margin:6px 0;font-weight:700;color:#444">🏆 השיא שלך: ${best}${unit} &nbsp;·&nbsp; 🪙 +${coins||0}</div>
   ${extra||''}
   <button class="btn" id="rRetry">שחקו שוב</button>
+  <a class="btn" style="background:linear-gradient(#3b8cff,#1877f2);box-shadow:0 5px 0 #0b4fb0" target="_blank" rel="noopener" href="https://www.facebook.com/share/1EAB5bpqLv/">👍 עקבו אחרינו בפייסבוק</a>
   <div class="row"><a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(txt)}">שתפו בוואטסאפ</a><a class="btn dk" href="index.html">לכל המשחקים</a></div>
   <div class="coupon">🎁 קופון למינימרקט אור – בקרוב!<small>אספו מטבעות עכשיו, והם יחכו לכם כשהקופונים יעלו · ${PHONE}</small></div>
  </div>`;
