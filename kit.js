@@ -1,48 +1,47 @@
 import * as THREE from './vendor/three.js';
 import {PRODUCTS,loadImg} from './common.js';
 export {THREE};
-export async function loadProducts(){const imgs=await Promise.all(PRODUCTS.map(p=>loadImg(p.img)));PRODUCTS.forEach((p,i)=>p.image=imgs[i]);return PRODUCTS}
+export async function loadProducts(){
+ const prof=await (await fetch('img/prof.json')).json();
+ const imgs=await Promise.all(PRODUCTS.map(p=>loadImg('img/p_'+p.id+'.webp')));
+ PRODUCTS.forEach((p,i)=>{const q=prof[p.id];p.image=imgs[i];p.prof=q;p.col=q.col;p.w=p.h*q.aspect;if(p.shape==='lathe'||p.shape==='carton')p.d=p.w*(p.shape==='carton'?.95:1)});return PRODUCTS}
 function cv(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 function tex(c){const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t}
-function faceTex(p,w=256,h=256,repeat=1){const c=cv(w*repeat,h),x=c.getContext('2d');x.fillStyle=p.col;x.fillRect(0,0,c.width,c.height);
- for(let r=0;r<repeat;r++){ if(p.image){ // contain-fit then stretch slightly
-  const im=p.image,s=Math.min(w/im.width,h/im.height),iw=im.width*s,ih=im.height*s; x.drawImage(im,r*w+(w-iw)/2,(h-ih)/2,iw,ih)}}
- return tex(c)}
+function imgTex(p,fill){const im=p.image,c=cv(im.width,im.height),x=c.getContext('2d');if(fill){x.fillStyle=p.col;x.fillRect(0,0,c.width,c.height)}x.drawImage(im,0,0);return tex(c)}
 const cache={};
-export function productMesh(p){
- const k=p.id; const S=(m)=>new THREE.MeshStandardMaterial(Object.assign({roughness:.45,metalness:0},m));
- let mesh;
- if(p.shape==='box'||p.shape==='bag'){
-  if(!cache[k]){const ft=faceTex(p,256,Math.round(256*p.h/p.w)); const side=S({color:p.col});
-   let g=new THREE.BoxGeometry(p.w,p.h,p.d,p.shape==='bag'?8:1,p.shape==='bag'?8:1,1);
-   if(p.shape==='bag'){const a=g.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i)/(p.w/2),y=a.getY(i)/(p.h/2),z=a.getZ(i);
-     const f=Math.max(0,1-Math.pow(Math.abs(x),3))*Math.max(0,1-Math.pow(Math.abs(y),4));a.setZ(i,z*(.25+.9*f));
-     if(Math.abs(y)>.92)a.setX(i,a.getX(i)*1.04)}g.computeVertexNormals()}
-   cache[k]={g,m:[side,side,side,side,S({map:ft,roughness:p.shape==='bag'?.3:.5}),S({map:ft})]}}
-  mesh=new THREE.Mesh(cache[k].g,cache[k].m);
- }else{
-  if(!cache[k]){const r=p.w/2,h=p.h;let pts;
-   if(p.shape==='bottle')pts=[[0,0],[r*.85,0],[r,.04*h],[r,.55*h],[r*.95,.62*h],[r*.42,.8*h],[r*.3,.9*h],[r*.32,.93*h],[r*.3,1*h],[0,1*h]];
-   else pts=[[0,0],[r*.82,0],[r,h*.95],[r*1.03,h],[0,h]];
-   const g=new THREE.LatheGeometry(pts.map(q=>new THREE.Vector2(q[0],q[1]-h/2)),24);
-   // remap v to height so the label maps straight
-   const a=g.attributes.position,uv=g.attributes.uv;for(let i=0;i<a.count;i++)uv.setY(i,(a.getY(i)+h/2)/h);
-   const c=cv(512,256),x=c.getContext('2d');x.fillStyle=p.col;x.fillRect(0,0,512,256);
-   if(p.image){const im=p.image;const s=256/im.height,iw=im.width*s;for(let j=0;j<2;j++){x.save();x.translate(j*256+128,0);
-     const sc=p.shape==='bottle'?Math.min(1.8,200/iw):1; x.drawImage(im,-iw*sc/2,0,iw*sc,256);x.restore()}}
-   cache[k]={g,m:S({map:tex(c),roughness:p.shape==='bottle'?.15:.4,transparent:false})}}
-  mesh=new THREE.Mesh(cache[k].g,cache[k].m);
- }
- mesh.userData.p=p;return mesh;
+const STD=(m)=>new THREE.MeshStandardMaterial(Object.assign({roughness:.42,metalness:0},m));
+function build(p){
+ const w=p.w,h=p.h,d=p.d||.3;
+ if(p.shape==='bag'){ // pillow: front+back sheets with exact cut-out silhouette
+  const g=new THREE.PlaneGeometry(w,h,14,14),a=g.attributes.position;
+  for(let i=0;i<a.count;i++){const x=a.getX(i)/(w/2),y=a.getY(i)/(h/2);const f=Math.max(0,1-x*x)**.6*Math.max(0,1-Math.abs(y)**3)**.8;a.setZ(i,f*d/2)}
+  g.computeVertexNormals();const t=imgTex(p,false);
+  const m=STD({map:t,alphaTest:.5,side:THREE.DoubleSide,roughness:.3});
+  const gr=new THREE.Group();const f=new THREE.Mesh(g,m);const bk=new THREE.Mesh(g,m);bk.rotation.y=Math.PI;gr.add(f,bk);return gr}
+ if(p.shape==='lathe'){const r=p.prof.r,n=r.length;const pts=r.map((v,k)=>new THREE.Vector2(Math.max(.004,v*w),k/(n-1)*h-h/2));
+  pts.unshift(new THREE.Vector2(0,-h/2));pts.push(new THREE.Vector2(0,h/2));
+  const g=new THREE.LatheGeometry(pts,28),a=g.attributes.position,uv=g.attributes.uv;
+  for(let i=0;i<a.count;i++){uv.setXY(i,.5+a.getX(i)/w*(a.getZ(i)>=0?1:-1),(a.getY(i)+h/2)/h)}
+  return new THREE.Mesh(g,STD({map:imgTex(p,true),roughness:p.id==='cola'?.12:.35}))}
+ if(p.shape==='carton'){const f=.8,gr=new THREE.Group();const T=imgTex(p,true);
+  const body=T.clone();body.repeat.set(1,f);body.needsUpdate=true;const top=T.clone();top.repeat.set(1,1-f);top.offset.set(0,f);top.needsUpdate=true;
+  const side=STD({map:body});const b=new THREE.Mesh(new THREE.BoxGeometry(w,h*f,d),[side,side,STD({color:'#f4f4f4'}),side,side,side]);b.position.y=-h/2+h*f/2;gr.add(b);
+  const rg=new THREE.BoxGeometry(w,h*(1-f),d),ra=rg.attributes.position;for(let i=0;i<ra.count;i++)if(ra.getY(i)>0)ra.setZ(i,0);rg.computeVertexNormals();
+  const tm=STD({map:top});const roof=new THREE.Mesh(rg,[STD({color:p.col}),STD({color:p.col}),tm,tm,tm,tm]);roof.position.y=h/2-h*(1-f)/2;gr.add(roof);
+  const fin=new THREE.Mesh(new THREE.BoxGeometry(w,.06,.03),STD({color:'#f2f2f2'}));fin.position.y=h/2;gr.add(fin);return gr}
+ // box
+ const t=imgTex(p,true),fm=STD({map:t}),sm=STD({color:p.col});
+ return new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[sm,sm,sm,sm,fm,fm]);
 }
+export function productMesh(p){if(!cache[p.id])cache[p.id]=build(p);const m=cache[p.id].clone();m.userData.p=p;return m}
 // supermarket shelf wall texture with real product art (bright)
 export function shelfTexture(products){const c=cv(1024,1024),x=c.getContext('2d');
  const g=x.createLinearGradient(0,0,0,1024);g.addColorStop(0,'#fff8ee');g.addColorStop(1,'#ffe9d0');x.fillStyle=g;x.fillRect(0,0,1024,1024);
- const rows=4,rh=1024/rows;let n=0;
+ const rows=3,rh=1024/rows;let n=0;
  for(let r=0;r<rows;r++){const y0=r*rh;x.fillStyle='#fffaf3';x.fillRect(0,y0,1024,rh);
   let xx=6;n=r*4;
   while(xx<1020){const q=products[(n++)%products.length];if(!q.image){xx+=60;continue}
-   const h=rh*(q.shape==='bottle'?.86:.7),w=q.image.width*h/q.image.height;
+   const h=rh*((q.shape==='lathe'||q.shape==='carton')?.86:.7),w=q.image.width*h/q.image.height;
    for(let k=0;k<2&&xx<1020;k++){x.drawImage(q.image,xx,y0+rh-26-h,w,h);xx+=w+2}xx+=8}
   x.fillStyle='#ff7a00';x.fillRect(0,y0+rh-26,1024,20);x.fillStyle='#fff';x.fillRect(0,y0+rh-26,1024,4);
   for(let t=40;t<1024;t+=170){x.fillStyle='#fff';x.fillRect(t,y0+rh-24,44,15);x.fillStyle='#111';x.font='bold 12px Rubik';x.fillText('₪'+(5+((t+r)%13))+'.90',t+3,y0+rh-12)}

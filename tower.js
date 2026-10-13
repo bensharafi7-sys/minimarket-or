@@ -4,7 +4,7 @@ import {store,sfx,audioUnlock,showResults,giftTease,toast,ICON} from './common.j
 const $=id=>document.getElementById(id);
 $('pause').innerHTML=ICON.pause;$('gift').innerHTML=ICON.gift;
 const app=$('app'),renderer=makeRenderer($('c'));
-const scene=new THREE.Scene();const BG=0xfff0de;scene.background=new THREE.Color(BG);scene.fog=new THREE.Fog(BG,18,52);
+const scene=new THREE.Scene();const BG=0xfff0de;scene.background=new THREE.Color(BG);scene.fog=new THREE.Fog(BG,24,70);
 const cam=new THREE.PerspectiveCamera(50,9/16,.1,100);
 scene.add(new THREE.HemisphereLight(0xffffff,0xffd8b0,1.7));const sun=new THREE.DirectionalLight(0xffffff,1.8);sun.position.set(3,10,8);scene.add(sun);
 const rim=new THREE.DirectionalLight(0xffb066,.9);rim.position.set(-6,4,-3);scene.add(rim);
@@ -27,15 +27,15 @@ const SW=3.6;const shelf=new THREE.Group();scene.add(shelf);
 {const top=new THREE.Mesh(new THREE.BoxGeometry(SW,.22,1.6),M(0xff7a00,.35));top.position.y=-.11;shelf.add(top);
  const lip=new THREE.Mesh(new THREE.BoxGeometry(SW+.1,.35,.08),M(0x1c1c1c,.4));lip.position.set(0,-.25,.82);shelf.add(lip);
  const price=new THREE.Mesh(new THREE.PlaneGeometry(1.1,.26),new THREE.MeshBasicMaterial({map:signTexture([['מגדל אור · ₪9.90',64,90]],'#ffffff','#111',512,128)}));price.position.set(0,-.25,.87);shelf.add(price);
- const body=new THREE.Mesh(new THREE.BoxGeometry(SW,3,1.4),M(0x2a2a2a,.5));body.position.y=-1.85;shelf.add(body);
+ const body=new THREE.Mesh(new THREE.BoxGeometry(SW,3,1.4),M(0xe9e6e1,.5));body.position.y=-1.85;shelf.add(body);
  const holes=new THREE.Mesh(new THREE.BoxGeometry(SW-.2,.06,1.5),M(0xffffff,.3));holes.position.y=.005;shelf.add(holes)}
 // physics
 const world=new CANNON.World({gravity:new CANNON.Vec3(0,-18,0)});world.allowSleep=true;world.broadphase=new CANNON.SAPBroadphase(world);
-world.defaultContactMaterial.friction=.95;world.defaultContactMaterial.restitution=.04;world.solver.iterations=14;
+world.defaultContactMaterial.friction=1.1;world.defaultContactMaterial.restitution=.04;world.solver.iterations=14;
 const ground=new CANNON.Body({mass:0,shape:new CANNON.Box(new CANNON.Vec3(SW/2,.11,.8)),position:new CANNON.Vec3(0,-.11,0)});world.addBody(ground);
 let bestRun=0,items=[],cur=null,state='menu',topY=0,best=store.best('tower'),swingT=0,waitT=0,camY=2,shake=0,count=0,coins=0,lastX=0,nextMile=100,lost=false,lostT=0;
 const POOL=P;
-function dims(p){return p.shape==='bottle'?{w:p.h,h:p.w,d:p.d,rot:Math.PI/2}:{w:p.w,h:p.h,d:p.d,rot:0}}
+function dims(p){return (p.id==='cola'||p.id==='shoko')?{w:p.h,h:p.w,d:p.d,rot:Math.PI/2}:{w:p.w,h:p.h,d:p.d,rot:0}}
 function makeItem(p){const g=new THREE.Group();const m=productMesh(p);m.scale.setScalar(1);const d=dims(p);if(d.rot)m.rotation.z=d.rot;g.add(m);g.userData={p,d};scene.add(g);return g}
 function spawn(){const p=count===0?P.find(q=>q.id==='krembo'):POOL[Math.floor(Math.random()*POOL.length)];cur=makeItem(p);swingT=0;sfx.click()}
 function drop(){if(!cur||state!=='play')return;const {d}=cur.userData;

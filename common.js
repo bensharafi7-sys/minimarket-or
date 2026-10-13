@@ -1,18 +1,17 @@
 // shared: products, storage, sfx, results
 export const PRODUCTS=[
- {id:'bamba',name:'במבה',img:'img/bamba.png',shape:'bag',w:1.0,h:1.35,d:.38,col:'#f2b21b'},
- {id:'bissli',name:'ביסלי',img:'img/bissli.png',shape:'bag',w:1.0,h:1.3,d:.38,col:'#e2a020'},
- {id:'tapuchips',name:'תפוצ\'יפס',img:'img/tapuchips.png',shape:'bag',w:1.0,h:1.4,d:.38,col:'#d8252a'},
- {id:'cola',name:'קוקה-קולה',img:'img/cola.png',shape:'bottle',w:.42,h:1.5,d:.42,col:'#7a1d1a'},
- {id:'milk',name:'חלב תנובה',img:'img/milk.png',shape:'box',w:.62,h:1.25,d:.62,col:'#e9f1f4'},
- {id:'tara',name:'חלב טרה',img:'img/tara.jpg',shape:'box',w:.62,h:1.2,d:.62,col:'#f4f6fa'},
- {id:'elite',name:'שוקולד עלית',img:'img/elite.jpg',shape:'box',w:1.05,h:.9,d:.16,col:'#c3151c'},
- {id:'para',name:'פרה עלית',img:'img/para.png',shape:'box',w:1.4,h:.66,d:.2,col:'#c8151c'},
- {id:'krembo',name:'קרמבו',img:'img/krembo.jpg',shape:'box',w:1.5,h:.62,d:.62,col:'#f3e7d2'},
- {id:'pasta',name:'פסטה אסם',img:'img/pasta.png',shape:'box',w:.9,h:1.25,d:.34,col:'#1d4fa8'},
- {id:'cottage',name:'קוטג\' תנובה',img:'img/cottage.png',shape:'tub',w:.9,h:.8,d:.9,col:'#f4f4f4'},
- {id:'milky',name:'מילקי',img:'img/milky.png',shape:'tub',w:.7,h:.75,d:.7,col:'#5b2b74'},
- {id:'shoko',name:'שוקו',img:'img/shoko.png',shape:'bottle',w:.4,h:1.3,d:.4,col:'#5a3423'},
+ {id:'bamba',name:'במבה',shape:'bag',h:1.35,d:.42},
+ {id:'bissli',name:'ביסלי',shape:'bag',h:1.3,d:.42},
+ {id:'tapuchips',name:'תפוצ\'יפס',shape:'bag',h:1.35,d:.42},
+ {id:'pasta',name:'פסטה אסם',shape:'bag',h:1.3,d:.3},
+ {id:'krembo',name:'קרמבו',shape:'bag',h:.8,d:.5},
+ {id:'cola',name:'קוקה-קולה',shape:'lathe',h:1.6},
+ {id:'shoko',name:'שוקו',shape:'lathe',h:1.25},
+ {id:'milk',name:'חלב תנובה',shape:'carton',h:1.3},
+ {id:'tara',name:'חלב טרה',shape:'carton',h:1.3},
+ {id:'elite',name:'שוקולד פרה עלית',shape:'box',h:.6,d:.14},
+ {id:'cottage',name:'קוטג\' תנובה',shape:'lathe',h:.85},
+ {id:'milky',name:'מילקי',shape:'lathe',h:.8},
 ];
 export const PHONE='03-9443449';
 const K='mo_';
@@ -51,7 +50,7 @@ export const sfx={
 export function loadImg(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})}
 // ---- results overlay
 export function showResults({game,title,score,unit,coins,extra,onRetry}){
- const ov=document.getElementById('results'); const isBest=store.setBest(game,score); store.addCoins(coins||0);
+ const ov=document.getElementById('results'); const prev=store.best(game); const isBest=store.setBest(game,score)&&prev>0; store.addCoins(coins||0);
  const best=store.best(game);
  const txt=`הגעתי ל-${score}${unit} ב"${title}" של מינימרקט אור! 🛒 נסו לעקוף אותי: ${location.href.split('#')[0]}`;
  ov.innerHTML=`<div class="card">

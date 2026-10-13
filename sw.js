@@ -1,6 +1,6 @@
-const CACHE='mo-game-20261013125957';
-const ASSETS=['./','index.html','cart.html','tower.html','common.css','common.js','kit.js','cart.js','tower.js','vendor/three.js','vendor/cannon.js','fonts/rubik.ttf','manifest.json',
-'img/logo.png','img/icon-512.png','img/thumb_cart.jpg','img/thumb_tower.jpg','img/bamba.png','img/bissli.png','img/tapuchips.png','img/cola.png','img/milk.png','img/tara.jpg','img/elite.jpg','img/para.png','img/krembo.jpg','img/pasta.png','img/cottage.png','img/milky.png','img/shoko.png'];
+importScripts('assets.js');
+const CACHE='mo-game-20261013135824';
+const ASSETS=self.__ASSETS||[];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 // network-first for HTML (fresh deploys), cache-first for the rest
